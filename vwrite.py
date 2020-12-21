@@ -5,7 +5,7 @@ from reportlab.pdfgen.canvas import Canvas
 
 # 2) Upload a pdf (if image= would be great) and scale window o it
 
-# 3) Allow input boxes to be pulled into place
+# 3) Allow input boxes to be created and pulled into place (-> use text-input cursor)
 
 # 4) Print input onto the pdf (canvas)
 
