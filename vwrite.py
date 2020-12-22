@@ -1,5 +1,5 @@
 from tkinter import *
-#from reportlab.pdfgen import canvas
+from reportlab.pdfgen import canvas
 from PIL import ImageTk, Image
 
 # 1) Create a window
