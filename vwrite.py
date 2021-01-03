@@ -8,6 +8,7 @@ ROOT.title("VouchWrite")
 ROOT.minsize(150, 150)
 ROOT.configure(background="white")
 
+
 # Creating an input box
 input_box = Entry(ROOT, width=30, border=2)
 input_box.pack()
@@ -16,20 +17,26 @@ input_box.insert(0, "Enter file name")
 # Function to open selected file in a new window
 def open_edit_win(filename):
     global edit_img
-    FileWin = Toplevel()
-    FileWin.title("VouchWrite - Editing")
+    FILEWIN = Toplevel()
+    FILEWIN.title("VouchWrite - Editing")
+
+    # Scrollbars for FILEWIN
+    # scroll_vert = Scrollbar(FILEWIN)
+    # scroll_vert.pack(side=RIGHT, fill=Y)
+    # # SCROLL_HORI = Scrollbar(FILEWIN, orient=HORIZONTAL)
+    # # SCROLL_HORI.pack()
 
     edit_img = ImageTk.PhotoImage(Image.open(filename))
-    img_label = Label(FileWin, image=editImg)
+    img_label = Label(FILEWIN, image=edit_img, yscrollcommand=scroll_vert.set)
     img_label.pack()
 
 # Function for browsing file explorer and opening image to be edited
 def select_file():               ## Block user from opening a second Editing window
-    input = inputBox.get()
+    input = input_box.get()
     if input == "Enter file name":
         filename = filedialog.askopenfilename(initialdir = "/", title = "Select a file", filetypes = (("Jpeg", "*.jpg*"), ("png", "*.png*"), ("all files", "*.*")))
         if filename != "":
-            startLabel.configure(text = "File opened: " + filename)
+            start_label.configure(text = "File opened: " + filename)
             open_edit_win(filename)
 
         else:
