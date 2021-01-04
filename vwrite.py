@@ -9,10 +9,10 @@ ROOT.minsize(150, 150)
 ROOT.configure(background="white")
 
 
-# Creating an input box
-input_box = Entry(ROOT, width=30, border=2)
-input_box.pack()
-input_box.insert(0, "Enter file name")
+# Creating an input box - Maybe just leave the browse button
+# input_box = Entry(ROOT, width=30, border=2)
+# input_box.pack()
+# input_box.insert(0, "Enter file name")
 
 # Function to open selected file in a new window
 def open_edit_win(filename):
