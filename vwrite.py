@@ -42,8 +42,10 @@ def main():
     # Creating button widget
     browse_button = Button(ROOT, text="Find File to Edit", padx=20, bg="white", command=select_file)
     browse_button.pack()
-    ROOT.mainloop()
+
 
 
 if __name__ == "__main__":
     main()
+
+ROOT.mainloop()
