@@ -40,7 +40,7 @@ def main():
     start_label.pack()
 
     # Creating button widget
-    browse_button = Button(ROOT, text="Find File to Edit", padx=20, command=select_file, bg="white")
+    browse_button = Button(ROOT, text="Find File to Edit", padx=20, bg="white", command=select_file)
     browse_button.pack()
     ROOT.mainloop()
 
