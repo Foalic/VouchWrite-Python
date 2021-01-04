@@ -21,13 +21,13 @@ def open_edit_win(filename):
     FILEWIN.title("VouchWrite - Editing")
 
     # Scrollbars for FILEWIN
-    # scroll_vert = Scrollbar(FILEWIN)
-    # scroll_vert.pack(side=RIGHT, fill=Y)
-    # # SCROLL_HORI = Scrollbar(FILEWIN, orient=HORIZONTAL)
-    # # SCROLL_HORI.pack()
+    #scroll_vert = Scrollbar(img_label)
+    #scroll_vert.pack(side=RIGHT, fill=Y)
+    # # scroll_hori = Scrollbar(FILEWIN, orient=HORIZONTAL)
+    # # scroll_hori.pack()
 
     edit_img = ImageTk.PhotoImage(Image.open(filename))
-    img_label = Label(FILEWIN, image=edit_img, yscrollcommand=scroll_vert.set)
+    img_label = Label(FILEWIN, image=edit_img)
     img_label.pack()
 
 # Function for browsing file explorer and opening image to be edited
