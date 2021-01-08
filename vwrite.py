@@ -10,14 +10,15 @@ WIDTH, HEIGHT = 400, 150
 ROOT.minsize(WIDTH, HEIGHT)
 ROOT.configure(background="black")
 
-# Finding screen size
-WIDTH_SCREEN = ROOT.winfo_screenwidth()
-HEIGHT_SCREEN = ROOT.winfo_screenheight()
+def centre_window(window, width, height):
+    # Finding screen size
+    WIDTH_SCREEN = window.winfo_screenwidth()
+    HEIGHT_SCREEN = window.winfo_screenheight()
 
-# Using screen size to place root in the middle
-rootx = (WIDTH_SCREEN/2) - (WIDTH/2)
-rooty = (HEIGHT_SCREEN/2) - (HEIGHT/2)
-ROOT.geometry('%dx%d+%d+%d' % (WIDTH, HEIGHT, rootx, rooty))
+    # Using screen size to place root in the middle
+    winx = (WIDTH_SCREEN/2) - (width/2)
+    winy = (HEIGHT_SCREEN/2) - (height/2)
+    window.geometry('%dx%d+%d+%d' % (width, height, winx, winy))
 
 # Function to open selected file in a new window
 def open_edit_win(filename):
@@ -25,6 +26,7 @@ def open_edit_win(filename):
     FILEWIN = Toplevel()
     FILEWIN.title("VouchWrite - Editing")
     FILEWIN.maxsize(1000, 500)
+    centre_window(FILEWIN, 1000, 500)
 
     # Adding scrollbar
     scroll = ScrolledWindow(FILEWIN)
@@ -46,6 +48,8 @@ def select_file():               ## Block user from opening a second Editing win
         pass
 
 def main():
+    centre_window(ROOT, WIDTH, HEIGHT)
+
     # Creating label widget and packing it onto screen
     global start_label
     start_label = Label(ROOT, text="Welcome to VouchWrite!", bg="black", fg="white", pady=30)
@@ -54,10 +58,8 @@ def main():
     # Creating button widget
     browse_button = Button(ROOT, text="Find File to Edit", padx=20, bg="white", command=select_file)
     browse_button.pack()
-
+    ROOT.mainloop()
 
 
 if __name__ == "__main__":
     main()
-
-ROOT.mainloop()
