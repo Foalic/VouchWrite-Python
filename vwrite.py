@@ -1,12 +1,23 @@
 from tkinter import *
+from tkinter.tix import *
 from tkinter import filedialog
 from PIL import ImageTk, Image
 
 # Creating the root frame and window
 ROOT = Tk()
 ROOT.title("VouchWrite")
-ROOT.minsize(300, 150)
+WIDTH, HEIGHT = 400, 150
+ROOT.minsize(WIDTH, HEIGHT)
 ROOT.configure(background="black")
+
+# Finding screen size
+WIDTH_SCREEN = ROOT.winfo_screenwidth()
+HEIGHT_SCREEN = ROOT.winfo_screenheight()
+
+# Using screen size to place root in the middle
+rootx = (WIDTH_SCREEN/2) - (WIDTH/2)
+rooty = (HEIGHT_SCREEN/2) - (HEIGHT/2)
+ROOT.geometry('%dx%d+%d+%d' % (WIDTH, HEIGHT, rootx, rooty))
 
 # Function to open selected file in a new window
 def open_edit_win(filename):
@@ -15,13 +26,14 @@ def open_edit_win(filename):
     FILEWIN.title("VouchWrite - Editing")
     FILEWIN.maxsize(1000, 500)
 
-    edit_img = ImageTk.PhotoImage(Image.open(filename))
-    img_label = Label(FILEWIN, image=edit_img)
-    img_label.pack()
+    # Adding scrollbar
+    scroll = ScrolledWindow(FILEWIN)
+    scroll.pack()
+    scrollwin = scroll.window
 
-    # # Scrollbar for FILEWIN
-    # scroll_vert = Scrollbar(FILEWIN)
-    # scroll_vert.pack(side=RIGHT, fill=Y)
+    edit_img = ImageTk.PhotoImage(Image.open(filename))
+    img_label = Label(scrollwin, image=edit_img)
+    img_label.pack()
 
 # Function for browsing file explorer and opening image to be edited
 def select_file():               ## Block user from opening a second Editing window - Create modal window
