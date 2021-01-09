@@ -4,11 +4,11 @@ from tkinter import filedialog
 from PIL import ImageTk, Image
 
 # Creating the root frame and window
-ROOT = Tk()
-ROOT.title("VouchWrite")
+root = Tk()
+root.title("VouchWrite")
 WIDTH, HEIGHT = 400, 150
-ROOT.minsize(WIDTH, HEIGHT)
-ROOT.configure(background="black")
+root.minsize(WIDTH, HEIGHT)
+root.configure(background="black")
 
 def centre_window(window, width, height):
     # Finding screen size
@@ -23,13 +23,13 @@ def centre_window(window, width, height):
 # Function to open selected file in a new window
 def open_edit_win(filename):
     global edit_img
-    FILEWIN = Toplevel()
-    FILEWIN.title("VouchWrite - Editing")
-    FILEWIN.maxsize(1000, 500)
-    centre_window(FILEWIN, 1000, 500)
+    edit_window = Toplevel()
+    edit_window.title("VouchWrite - Editing")
+    edit_window.maxsize(1000, 500)
+    centre_window(edit_window, 1000, 500)
 
     # Adding scrollbar
-    scroll = ScrolledWindow(FILEWIN)
+    scroll = ScrolledWindow(edit_window)
     scroll.pack()
     scrollwin = scroll.window
 
@@ -48,17 +48,17 @@ def select_file():               ## Block user from opening a second Editing win
         pass
 
 def main():
-    centre_window(ROOT, WIDTH, HEIGHT)
+    centre_window(root, WIDTH, HEIGHT)
 
     # Creating label widget and packing it onto screen
     global start_label
-    start_label = Label(ROOT, text="Welcome to VouchWrite!", bg="black", fg="white", pady=30)
+    start_label = Label(root, text="Welcome to VouchWrite!", bg="black", fg="white", pady=30)
     start_label.pack()
 
     # Creating button widget
-    browse_button = Button(ROOT, text="Find File to Edit", padx=20, bg="white", command=select_file)
+    browse_button = Button(root, text="Find File to Edit", padx=20, bg="white", command=select_file)
     browse_button.pack()
-    ROOT.mainloop()
+    root.mainloop()
 
 
 if __name__ == "__main__":
