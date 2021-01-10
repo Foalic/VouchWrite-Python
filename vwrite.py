@@ -20,13 +20,14 @@ def centre_window(window, width, height):
     winy = (HEIGHT_SCREEN/2) - (height/2)
     window.geometry('%dx%d+%d+%d' % (width, height, winx, winy))
 
-# Function to open selected file in a new window
+# Function to open selected file in a new window and block root
 def open_edit_win(filename):
     global edit_img
     edit_window = Toplevel()
     edit_window.title("VouchWrite - Editing")
     edit_window.maxsize(1000, 500)
     centre_window(edit_window, 1000, 500)
+    edit_window.grab_set()
 
     # Adding scrollbar
     scroll = ScrolledWindow(edit_window)
