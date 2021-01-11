@@ -1,9 +1,9 @@
 from tkinter import *
 from tkinter.tix import *
 from tkinter import filedialog
-from PIL import ImageTk, Image
+from PIL import ImageTk, Image, ImageDraw, ImageFont
+import os
 
-# Creating the root frame and window
 root = Tk()
 root.title("VouchWrite")
 WIDTH, HEIGHT = 400, 150
@@ -22,58 +22,126 @@ def centre_window(window, width, height):
     window.geometry('%dx%d+%d+%d' % (width, height, winx, winy))
 
 
-# Adding function to add text to the image where you click (need to add another
-# window in which to input the text and use the mouseclick vector to place it)
-def add_text(x, y):
+def get_destroy():
+    global added_text
+    global font_size
+
+    added_text = input_box.get()
+    font_size = int(font_size_input.get())
+
+    text_window.destroy()
+
+
+def write_new_file():
+
+    file_name = file_path.split('/')[-1]
+
+    if os.path.isfile(os.environ['USERPROFILE'] + '\Desktop\{}'.format('edited_' + file_name)):
+        output = open(os.path.join(os.environ['USERPROFILE'], 'Desktop\{}'.format('edited_again_' + file_name)), mode='w')
+        final_img.save(output)
+    else:
+        output = open(os.path.join(os.environ['USERPROFILE'], 'Desktop\{}'.format('edited_' + file_name)), mode='w')
+        final_img.save(output)
+
+    edit_window.destroy()
+
+
+def draw_text():
+    global final_img
+
+    get_destroy()
+
+    base_img = Image.open(file_path).convert("RGBA")
+    txt_img = Image.new("RGBA", base_img.size, (255, 255, 255, 0))
+
+    font_obj = ImageFont.truetype('arial.ttf', size=font_size)
+    draw_obj = ImageDraw.Draw(txt_img)
+
+    print_text = added_text
+    text_colour = (0, 0, 0, 255)
+
+    draw_obj.text((coordinates[0], coordinates[1]), print_text, fill=text_colour, font=font_obj)
+    final_img = Image.alpha_composite(base_img, txt_img)
+    final_img = final_img.convert("RGB")
+
+    open_edit_win(final_img)
+
+
+# Function to add text to the image where you double click
+def add_text(vector):
+    global input_box
+    global font_size_input
+    global text_window
+    global coordinates
+
+    coordinates = vector.x, vector.y
+
     text_window = Toplevel()
     text_window.title("Enter text")
+    text_window.minsize(200, 125)
+    centre_window(text_window, 200, 125)
+    text_window.transient(edit_window)
+    text_window.grab_set()
 
-    ## Mouse click event to open text_window -- Has to be in open_edit_window
+    text_label = Label(text_window, text="Text:")
+    text_label.pack()
+    input_box = Entry(text_window, bd=5)
+    input_box.pack()
 
-    ## Text Box Label with button --- Get code from Run Apps
+    font_label = Label(text_window, text="Font size:")
+    font_label.pack()
+    font_size_input = Entry(text_window, bd=5)
+    font_size_input.insert(0, "25")
+    font_size_input.pack()
 
-
-    save_button = Button(text_window, text="Save", padx=20, bg="white", command=lambda: edit_img.save('voucher.jpg'))
-    save_button.pack()
-
-    draw_obj = ImageDraw.Draw(edit_img)
-    font_obj = ImageFont.truetype('arial.ttf', size=10)
-
-    print_text = "Input from text window"
-    text_colour = 'rgb(0, 0, 0)'
-
-    # draw the message on the image
-    draw_obj.text((x, y), print_text, fill=text_colour, font=font_obj)
+    ok_button = Button(text_window, text="Ok", padx=20, command=draw_text)
+    ok_button.pack()
 
 
 
-# Function to open selected file in a new window and block root
-def open_edit_win(filename):
+# Function to open selected file in a new window and block root, or open
+# already edited image instead of original
+def open_edit_win(file_path):
     global edit_img
+    global edit_window
+
+    try:
+        edit_window.destroy()
+    except:
+        pass
+
     edit_window = Toplevel()
     edit_window.title("VouchWrite - Editing")
     edit_window.maxsize(1000, 500)
     centre_window(edit_window, 1000, 500)
     edit_window.grab_set()
 
-    # Adding scrollbar
     scroll = ScrolledWindow(edit_window)
     scroll.pack()
-    scrollwin = scroll.window
+    scroll_win = scroll.window
 
-    edit_img = ImageTk.PhotoImage(Image.open(filename))
-    img_label = Label(scrollwin, image=edit_img)
+    try:
+        edit_img = ImageTk.PhotoImage(Image.open(file_path))
+    except:
+        edit_img = ImageTk.PhotoImage(file_path)
+
+    img_label = Label(scroll_win, image=edit_img)
     img_label.pack()
 
-    # Listen for mouseclick event and open add_text(x,y)
+    save_button = Button(scroll_win, text="Save", padx=20, bg="white", command=write_new_file)
+    save_button.pack()
+
+    img_label.bind('<Double 1>', add_text)
 
 
-# Function for browsing file explorer and opening image to be edited
 def select_file():
-    filename = filedialog.askopenfilename(initialdir = "/", title = "Select a file", filetypes = (("Jpeg", "*.jpg*"), ("png", "*.png*"), ("all files", "*.*")))
-    if filename != "":
-        start_label.configure(text = "File opened: " + filename)
-        open_edit_win(filename)
+    global file_path
+
+    file_path = filedialog.askopenfilename(initialdir = "/", title = "Select a file",
+                                            filetypes = (("Jpeg", "*.jpg*"), ("png", "*.png*"), ("all files", "*.*")))
+    if file_path != "":
+        start_label.configure(text = "File opened: " + file_path)
+        open_edit_win(file_path)
 
     else:
         pass
@@ -82,12 +150,10 @@ def select_file():
 def main():
     centre_window(root, WIDTH, HEIGHT)
 
-    # Creating label widget and packing it onto screen
     global start_label
     start_label = Label(root, text="Welcome to VouchWrite!", bg="black", fg="white", pady=30)
     start_label.pack()
 
-    # Creating button widget
     browse_button = Button(root, text="Find File to Edit", padx=20, bg="white", command=select_file)
     browse_button.pack()
 
