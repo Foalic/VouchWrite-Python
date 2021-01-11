@@ -51,7 +51,11 @@ def draw_text():
 
     get_destroy()
 
-    base_img = Image.open(file_path).convert("RGBA")
+    try:
+        base_img = Image.open(image).convert("RGBA")
+    except:
+        base_img = image.convert("RGBA")
+
     txt_img = Image.new("RGBA", base_img.size, (255, 255, 255, 0))
 
     font_obj = ImageFont.truetype('arial.ttf', size=font_size)
@@ -91,7 +95,7 @@ def add_text(vector):
     font_label = Label(text_window, text="Font size:")
     font_label.pack()
     font_size_input = Entry(text_window, bd=5)
-    font_size_input.insert(0, "25")
+    font_size_input.insert(0, "10")
     font_size_input.pack()
 
     ok_button = Button(text_window, text="Ok", padx=20, command=draw_text)
@@ -101,9 +105,12 @@ def add_text(vector):
 
 # Function to open selected file in a new window and block root, or open
 # already edited image instead of original
-def open_edit_win(file_path):
+def open_edit_win(worked_image):
     global edit_img
     global edit_window
+    global image
+
+    image = worked_image
 
     try:
         edit_window.destroy()
@@ -121,9 +128,9 @@ def open_edit_win(file_path):
     scroll_win = scroll.window
 
     try:
-        edit_img = ImageTk.PhotoImage(Image.open(file_path))
+        edit_img = ImageTk.PhotoImage(Image.open(image))
     except:
-        edit_img = ImageTk.PhotoImage(file_path)
+        edit_img = ImageTk.PhotoImage(image)
 
     img_label = Label(scroll_win, image=edit_img)
     img_label.pack()
@@ -138,7 +145,7 @@ def select_file():
     global file_path
 
     file_path = filedialog.askopenfilename(initialdir = "/", title = "Select a file",
-                                            filetypes = (("Jpeg", "*.jpg*"), ("png", "*.png*"), ("all files", "*.*")))
+                                            filetypes = (("all files", "*.*"), ("Jpg", "*.jpg*"), ("Jpeg", "*.jpeg*"), ("png", "*.png*")))
     if file_path != "":
         start_label.configure(text = "File opened: " + file_path)
         open_edit_win(file_path)
