@@ -6,5 +6,5 @@ Essentially, it is an application to fill out reusable templates (of forms, etc.
 
 TO-DO:
 
-- Create a delete function.
+- Create a delete chosen change function.
 - Create Pdf compatibility
