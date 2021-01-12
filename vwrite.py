@@ -129,8 +129,8 @@ def add_text(vector):
     ok_button.pack()
 
 
-# Feature to enable deleting changes. Create a
-# def delete_chosen(): . This code is a filler for now:
+# Feature to enable deleting changes. Create an optionmenu or Radio buttons
+# def delete_chosen():
 #     if edits == []:
 #         messagebox.showinfo("No changes", "No changes have been made.")
 #     else:
