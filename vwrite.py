@@ -22,7 +22,7 @@ def centre_window(window, width, height):
     window.geometry('%dx%d+%d+%d' % (width, height, winx, winy))
 
 
-def get_destroy():
+def get_input_destroy():
     global added_text
     global font_size
 
@@ -31,6 +31,26 @@ def get_destroy():
 
     text_window.destroy()
     edit_window.destroy()
+
+
+def get_chosen_destroy():
+    global added_text
+
+    chosen_value = chosen.get()
+
+    if chosen_value == -1 or chosen_value == "":
+        radio_wn.destroy()
+        return
+    else:
+        to_remove = edits[chosen_value]
+        edits.remove(to_remove)
+        radio_wn.destroy()
+        edit_window.destroy()
+        added_text = ""
+        print()
+        draw_text()
+
+
 
 
 def write_new_file():
@@ -58,19 +78,16 @@ def draw_text():
     global added_text
 
     if 'edits' in globals():
-        print("********EDITS IN GLOBAL***************************")
         pass
     else:
-        print("************EDITS CREATED*************")
         edits = []
 
     try:
-        get_destroy()
+        get_input_destroy()
     except:
         pass
 
     base_img = Image.open(file_path).convert("RGBA")
-    print("BASE IS FILE PATH!!!!!!!!!!!!!!!!!!!!!!")
 
     if added_text != "":
         edits.append((added_text, (coordinates)))
@@ -78,7 +95,6 @@ def draw_text():
 
     if edits != []:
         for index, edit in enumerate(edits, start=0):
-            print("[[[[[[[[[]]]]]]]]]STARTING FOR LOOP[[[[[[[[[[]]]]]]]]]]")
             txt_img = Image.new("RGBA", base_img.size, (255, 255, 255, 0))
             font_obj = ImageFont.truetype('arial.ttf', size=font_size)
             draw_obj = ImageDraw.Draw(txt_img)
@@ -90,11 +106,8 @@ def draw_text():
                 final_img = inter_img.convert("RGB")
                 break
     else:
-        print("***********NO EDITS IMAGE**************")
         final_img = base_img.convert("RGB")
 
-    print(edits)
-    print(type(edits))
     open_edit_win(final_img)
 
 
@@ -130,25 +143,34 @@ def add_text(vector):
 
 
 # Feature to enable deleting changes. Create an optionmenu or Radio buttons
-# def delete_chosen():
-#     if edits == []:
-#         messagebox.showinfo("No changes", "No changes have been made.")
-#     else:
-#         popup = tk.Toplevel()
-#         PUWIDTH, PUHEIGHT = (200, 65)
-#         popup.minsize(PUWIDTH, PUHEIGHT)
-#         popupx = (WIDTH_SCREEN/2) - (PUWIDTH/2)
-#         popupy = (HEIGHT_SCREEN/2) - (PUHEIGHT/2)
-#         popup.geometry('%dx%d+%d+%d' % (PUWIDTH, PUHEIGHT, popupx, popupy))
-#
-#         enter_label = tk.Label(popup, text="Please enter index of file to delete:")
-#         enter_label.pack()
-#
-#         input_box = tk.Entry(popup, textvariable=tk.IntVar())
-#         input_box.pack()
-#
-#         destroypu = tk.Button(popup, text="Enter", command=get_destroy)
-#         destroypu.pack()
+def delete_chosen():
+    global chosen
+    global radio_wn
+
+    if 'edits' not in globals():
+        messagebox.showinfo("No changes", "No changes have been made that could be deleted.")
+    elif edits == []:
+        messagebox.showinfo("No changes", "No changes exist that could be deleted.")
+    else:
+        radio_wn = Toplevel()
+        RADWIDTH, RADHEIGHT = (300, 300)
+        centre_window(radio_wn, RADWIDTH, RADHEIGHT)
+        radio_wn.grab_set()
+
+        radio_label = Label(radio_wn, text="Please choose a change to delete: ")
+        radio_label.pack()
+
+        chosen = IntVar()
+        none_radio = Radiobutton(radio_wn, variable=chosen, text="None", value=-1)
+        none_radio.pack()
+        none_radio.select()
+        for i, edit in enumerate(edits, start=0):
+            option_radio = Radiobutton(radio_wn, variable=chosen, text=f"Change {i+1}:\n'{edit[0]}'", value=i)
+            option_radio.pack()
+            option_radio.deselect()
+
+        destroy_radio_wn = Button(radio_wn, text="Ok", bg="white", command=get_chosen_destroy)
+        destroy_radio_wn.pack()
 
 
 # Feature to allow deleting last made change - faster than delete_chosen
@@ -157,18 +179,14 @@ def delete_last():
     global added_text
     global image
 
-    print("EDITS BEFORE POP: ", edits)
     if 'edits' not in globals():
         messagebox.showinfo("No changes", "No changes have been made that could be deleted.")
     elif edits == []:
         messagebox.showinfo("No changes", "No changes exist that could be deleted.")
         image = Image.open(file_path)
     else:
-        print("EDITS RIGHT BEFORE POP: ", edits)
         edits.pop()
-        #image = Image.open(file_path)
         added_text = ""
-        print("******************", edits, "*******************")
         edit_window.destroy()
         draw_text()
 
@@ -181,7 +199,6 @@ def open_edit_win(worked_image):
     global image
 
     image = worked_image
-    print("(((((((((((((())))))))))))))", image, "((((((((((((((()))))))))))))))")
 
     edit_window = Toplevel()
     edit_window.title("VouchWrite - Editing")
@@ -189,7 +206,7 @@ def open_edit_win(worked_image):
         img_wdth, img_hght = Image.open(image).size
     except:
         img_wdth, img_hght = image.size
-    wn_wdth, wn_hght = img_wdth+50, img_hght+80
+    wn_wdth, wn_hght = img_wdth+50, img_hght+90
     centre_window(edit_window, wn_wdth, wn_hght)
     edit_window.grab_set()
 
@@ -211,6 +228,9 @@ def open_edit_win(worked_image):
     del_last_button = Button(scroll_win, text="Delete Last Change", padx=20, bg="white", command=delete_last)
     del_last_button.pack()
 
+    del_last_button = Button(scroll_win, text="Choose a Change to Delete", padx=20, bg="white", command=delete_chosen)
+    del_last_button.pack()
+
     img_label.bind('<Double 1>', add_text)
 
 
@@ -219,11 +239,14 @@ def select_file():
 
     file_path = filedialog.askopenfilename(initialdir = "/", title = "Select a file",
                                             filetypes = (("all files", "*.*"), ("Jpg", "*.jpg*"), ("Jpeg", "*.jpeg*"), ("png", "*.png*")))
-    if file_path != "":
+
+    if file_path == "":
+        pass
+    elif ".jpg" not in file_path and ".jpeg" not in file_path and ".png" not in file_path:
+        messagebox.showerror("Invalid file type", "Sorry this file type is not compatible with VouchWrite.")
+    elif file_path != "":
         start_label.configure(text = "File opened: " + file_path)
         open_edit_win(file_path)
-    else:
-        pass
 
 
 def main():
