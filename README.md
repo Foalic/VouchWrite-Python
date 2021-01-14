@@ -6,5 +6,6 @@ Essentially, it is an application to fill out reusable templates (of forms, etc.
 
 TO-DO:
 
-- Create a delete chosen change function.
 - Create Pdf compatibility
+- Write the README.
+- Fix large-image-half-displayed-outside-of-screen bug
