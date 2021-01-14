@@ -22,7 +22,7 @@ def centre_window(window, width, height):
     window.geometry('%dx%d+%d+%d' % (width, height, winx, winy))
 
 
-def get_destroy():
+def get_input_destroy():
     global added_text
     global font_size
 
@@ -31,6 +31,26 @@ def get_destroy():
 
     text_window.destroy()
     edit_window.destroy()
+
+
+def get_chosen_destroy():
+    global added_text
+
+    chosen_value = chosen.get()
+
+    if chosen_value == -1 or chosen_value == "":
+        radio_wn.destroy()
+        return
+    else:
+        to_remove = edits[chosen_value]
+        edits.remove(to_remove)
+        radio_wn.destroy()
+        edit_window.destroy()
+        added_text = ""
+        print()
+        draw_text()
+
+
 
 
 def write_new_file():
@@ -63,7 +83,7 @@ def draw_text():
         edits = []
 
     try:
-        get_destroy()
+        get_input_destroy()
     except:
         pass
 
@@ -123,26 +143,34 @@ def add_text(vector):
 
 
 # Feature to enable deleting changes. Create an optionmenu or Radio buttons
-# def delete_chosen():
-    # if edits == []:
-    #     messagebox.showinfo("No changes", "No changes have been made.")
-    #
-    # else:
-    #     popup = tk.Toplevel()
-    #     PUWIDTH, PUHEIGHT = (200, 65)
-    #     popup.minsize(PUWIDTH, PUHEIGHT)
-    #     popupx = (WIDTH_SCREEN/2) - (PUWIDTH/2)
-    #     popupy = (HEIGHT_SCREEN/2) - (PUHEIGHT/2)
-    #     popup.geometry('%dx%d+%d+%d' % (PUWIDTH, PUHEIGHT, popupx, popupy))
-    #
-    #     enter_label = tk.Label(popup, text="Please enter index of file to delete:")
-    #     enter_label.pack()
-    #
-    #     input_box = tk.Entry(popup, textvariable=tk.IntVar())
-    #     input_box.pack()
-    #
-    #     destroypu = tk.Button(popup, text="Enter", command=get_destroy)
-    #     destroypu.pack()
+def delete_chosen():
+    global chosen
+    global radio_wn
+
+    if 'edits' not in globals():
+        messagebox.showinfo("No changes", "No changes have been made that could be deleted.")
+    elif edits == []:
+        messagebox.showinfo("No changes", "No changes exist that could be deleted.")
+    else:
+        radio_wn = Toplevel()
+        RADWIDTH, RADHEIGHT = (300, 300)
+        centre_window(radio_wn, RADWIDTH, RADHEIGHT)
+        radio_wn.grab_set()
+
+        radio_label = Label(radio_wn, text="Please choose a change to delete: ")
+        radio_label.pack()
+
+        chosen = IntVar()
+        none_radio = Radiobutton(radio_wn, variable=chosen, text="None", value=-1)
+        none_radio.pack()
+        none_radio.select()
+        for i, edit in enumerate(edits, start=0):
+            option_radio = Radiobutton(radio_wn, variable=chosen, text=f"Change {i+1}:\n'{edit[0]}'", value=i)
+            option_radio.pack()
+            option_radio.deselect()
+
+        destroy_radio_wn = Button(radio_wn, text="Ok", bg="white", command=get_chosen_destroy)
+        destroy_radio_wn.pack()
 
 
 # Feature to allow deleting last made change - faster than delete_chosen
@@ -178,7 +206,7 @@ def open_edit_win(worked_image):
         img_wdth, img_hght = Image.open(image).size
     except:
         img_wdth, img_hght = image.size
-    wn_wdth, wn_hght = img_wdth+50, img_hght+80
+    wn_wdth, wn_hght = img_wdth+50, img_hght+90
     centre_window(edit_window, wn_wdth, wn_hght)
     edit_window.grab_set()
 
@@ -198,6 +226,9 @@ def open_edit_win(worked_image):
     save_button.pack()
 
     del_last_button = Button(scroll_win, text="Delete Last Change", padx=20, bg="white", command=delete_last)
+    del_last_button.pack()
+
+    del_last_button = Button(scroll_win, text="Choose a Change to Delete", padx=20, bg="white", command=delete_chosen)
     del_last_button.pack()
 
     img_label.bind('<Double 1>', add_text)
