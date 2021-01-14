@@ -58,10 +58,8 @@ def draw_text():
     global added_text
 
     if 'edits' in globals():
-        print("********EDITS IN GLOBAL***************************")
         pass
     else:
-        print("************EDITS CREATED*************")
         edits = []
 
     try:
@@ -70,7 +68,6 @@ def draw_text():
         pass
 
     base_img = Image.open(file_path).convert("RGBA")
-    print("BASE IS FILE PATH!!!!!!!!!!!!!!!!!!!!!!")
 
     if added_text != "":
         edits.append((added_text, (coordinates)))
@@ -78,7 +75,6 @@ def draw_text():
 
     if edits != []:
         for index, edit in enumerate(edits, start=0):
-            print("[[[[[[[[[]]]]]]]]]STARTING FOR LOOP[[[[[[[[[[]]]]]]]]]]")
             txt_img = Image.new("RGBA", base_img.size, (255, 255, 255, 0))
             font_obj = ImageFont.truetype('arial.ttf', size=font_size)
             draw_obj = ImageDraw.Draw(txt_img)
@@ -90,11 +86,8 @@ def draw_text():
                 final_img = inter_img.convert("RGB")
                 break
     else:
-        print("***********NO EDITS IMAGE**************")
         final_img = base_img.convert("RGB")
 
-    print(edits)
-    print(type(edits))
     open_edit_win(final_img)
 
 
@@ -131,24 +124,25 @@ def add_text(vector):
 
 # Feature to enable deleting changes. Create an optionmenu or Radio buttons
 # def delete_chosen():
-#     if edits == []:
-#         messagebox.showinfo("No changes", "No changes have been made.")
-#     else:
-#         popup = tk.Toplevel()
-#         PUWIDTH, PUHEIGHT = (200, 65)
-#         popup.minsize(PUWIDTH, PUHEIGHT)
-#         popupx = (WIDTH_SCREEN/2) - (PUWIDTH/2)
-#         popupy = (HEIGHT_SCREEN/2) - (PUHEIGHT/2)
-#         popup.geometry('%dx%d+%d+%d' % (PUWIDTH, PUHEIGHT, popupx, popupy))
-#
-#         enter_label = tk.Label(popup, text="Please enter index of file to delete:")
-#         enter_label.pack()
-#
-#         input_box = tk.Entry(popup, textvariable=tk.IntVar())
-#         input_box.pack()
-#
-#         destroypu = tk.Button(popup, text="Enter", command=get_destroy)
-#         destroypu.pack()
+    # if edits == []:
+    #     messagebox.showinfo("No changes", "No changes have been made.")
+    #
+    # else:
+    #     popup = tk.Toplevel()
+    #     PUWIDTH, PUHEIGHT = (200, 65)
+    #     popup.minsize(PUWIDTH, PUHEIGHT)
+    #     popupx = (WIDTH_SCREEN/2) - (PUWIDTH/2)
+    #     popupy = (HEIGHT_SCREEN/2) - (PUHEIGHT/2)
+    #     popup.geometry('%dx%d+%d+%d' % (PUWIDTH, PUHEIGHT, popupx, popupy))
+    #
+    #     enter_label = tk.Label(popup, text="Please enter index of file to delete:")
+    #     enter_label.pack()
+    #
+    #     input_box = tk.Entry(popup, textvariable=tk.IntVar())
+    #     input_box.pack()
+    #
+    #     destroypu = tk.Button(popup, text="Enter", command=get_destroy)
+    #     destroypu.pack()
 
 
 # Feature to allow deleting last made change - faster than delete_chosen
@@ -157,18 +151,14 @@ def delete_last():
     global added_text
     global image
 
-    print("EDITS BEFORE POP: ", edits)
     if 'edits' not in globals():
         messagebox.showinfo("No changes", "No changes have been made that could be deleted.")
     elif edits == []:
         messagebox.showinfo("No changes", "No changes exist that could be deleted.")
         image = Image.open(file_path)
     else:
-        print("EDITS RIGHT BEFORE POP: ", edits)
         edits.pop()
-        #image = Image.open(file_path)
         added_text = ""
-        print("******************", edits, "*******************")
         edit_window.destroy()
         draw_text()
 
@@ -181,7 +171,6 @@ def open_edit_win(worked_image):
     global image
 
     image = worked_image
-    print("(((((((((((((())))))))))))))", image, "((((((((((((((()))))))))))))))")
 
     edit_window = Toplevel()
     edit_window.title("VouchWrite - Editing")
@@ -219,11 +208,14 @@ def select_file():
 
     file_path = filedialog.askopenfilename(initialdir = "/", title = "Select a file",
                                             filetypes = (("all files", "*.*"), ("Jpg", "*.jpg*"), ("Jpeg", "*.jpeg*"), ("png", "*.png*")))
-    if file_path != "":
+
+    if file_path == "":
+        pass
+    elif ".jpg" not in file_path and ".jpeg" not in file_path and ".png" not in file_path:
+        messagebox.showerror("Invalid file type", "Sorry this file type is not compatible with VouchWrite.")
+    elif file_path != "":
         start_label.configure(text = "File opened: " + file_path)
         open_edit_win(file_path)
-    else:
-        pass
 
 
 def main():
