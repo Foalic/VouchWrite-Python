@@ -11,17 +11,17 @@ root.minsize(WIDTH, HEIGHT)
 root.configure(background="black")
 
 
+# Place window in the middle of screen
 def centre_window(window, width, height):
-    # Finding screen size
     WIDTH_SCREEN = window.winfo_screenwidth()
     HEIGHT_SCREEN = window.winfo_screenheight()
 
-    # Using screen size to place root in the middle
     winx = (WIDTH_SCREEN/2) - (width/2)
     winy = (HEIGHT_SCREEN/2) - (height/2)
     window.geometry('%dx%d+%d+%d' % (width, height, winx, winy))
 
 
+# Store the input and destroy input window
 def get_input_destroy():
     global added_text
     global font_size
@@ -33,6 +33,8 @@ def get_input_destroy():
     edit_window.destroy()
 
 
+# Removing chosen radio-button from 'edits' list and destroying pop-up
+# Sends to 'draw_text' to create image without chosen option
 def get_chosen_destroy():
     global added_text
 
@@ -52,7 +54,7 @@ def get_chosen_destroy():
 
 
 
-
+# Write the newly created file to desktop on clicking 'save'
 def write_new_file():
 
     file_name = file_path.split('/')[-1]
@@ -71,7 +73,7 @@ def write_new_file():
     edit_window.destroy()
 
 
-# Function to draw the entered text to image, either originial or last edited.
+# Draw the input text to image
 def draw_text():
     global final_img
     global edits
@@ -111,7 +113,8 @@ def draw_text():
     open_edit_win(final_img)
 
 
-# Function to add text to the image where you double click
+# Pop-up window to get input. Activated by double click and
+# passes vector of click to 'draw_text' function
 def add_text(vector):
     global input_box
     global font_size_input
@@ -142,7 +145,7 @@ def add_text(vector):
     ok_button.pack()
 
 
-# Feature to enable deleting changes. Create an optionmenu or Radio buttons
+# Pop-up for radio-button list - chosen option passed on to 'get_chosen_destroy'
 def delete_chosen():
     global chosen
     global radio_wn
@@ -173,7 +176,7 @@ def delete_chosen():
         destroy_radio_wn.pack()
 
 
-# Feature to allow deleting last made change - faster than delete_chosen
+# Deletes item last added to 'edits' list and sends to 'draw_text' for new image
 def delete_last():
     global edits
     global added_text
@@ -191,8 +194,7 @@ def delete_last():
         draw_text()
 
 
-# Function to open selected file in a new window and block root, or open
-# already edited image instead of original
+# Open selected file/file being edited in a new window and block root
 def open_edit_win(worked_image):
     global edit_img
     global edit_window
