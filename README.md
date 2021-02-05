@@ -8,4 +8,3 @@ TO-DO:
 
 - Create Pdf compatibility
 - Write the README.
-- Fix large-image-half-displayed-outside-of-screen bug
