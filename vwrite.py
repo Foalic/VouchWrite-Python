@@ -202,15 +202,10 @@ def open_edit_win(worked_image):
 
     edit_window = Toplevel()
     edit_window.title("VouchWrite - Editing")
-    try:
-        img_wdth, img_hght = Image.open(image).size
-    except:
-        img_wdth, img_hght = image.size
-    wn_wdth, wn_hght = img_wdth+50, img_hght+90
-    centre_window(edit_window, wn_wdth, wn_hght)
+    edit_window.state('zoomed')
     edit_window.grab_set()
 
-    scroll = ScrolledWindow(edit_window, width=wn_wdth, height=wn_hght)
+    scroll = ScrolledWindow(edit_window)
     scroll.pack()
     scroll_win = scroll.window
 
