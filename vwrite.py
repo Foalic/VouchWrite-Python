@@ -53,21 +53,23 @@ def get_chosen_destroy():
         draw_text()
 
 
-
 # Write the newly created file to desktop on clicking 'save'
 def write_new_file():
 
     file_name = file_path.split('/')[-1]
 
     if 'final_img' not in globals():
-        messagebox.showinfo("Original file", "This is still the original file. \nPlease make a change and save.")
+        messagebox.showinfo(
+            "Original file", "This is still the original file. \nPlease make a change and save.")
         return
     else:
         if os.path.isfile(os.environ['USERPROFILE'] + '\Desktop\{}'.format('edited_' + file_name)):
-            output = open(os.path.join(os.environ['USERPROFILE'], 'Desktop\{}'.format('edited_again_' + file_name)), mode='w')
+            output = open(os.path.join(os.environ['USERPROFILE'], 'Desktop\{}'.format(
+                'edited_again_' + file_name)), mode='w')
             final_img.save(output)
         else:
-            output = open(os.path.join(os.environ['USERPROFILE'], 'Desktop\{}'.format('edited_' + file_name)), mode='w')
+            output = open(os.path.join(os.environ['USERPROFILE'],
+                          'Desktop\{}'.format('edited_' + file_name)), mode='w')
             final_img.save(output)
 
     edit_window.destroy()
@@ -100,7 +102,8 @@ def draw_text():
             txt_img = Image.new("RGBA", base_img.size, (255, 255, 255, 0))
             font_obj = ImageFont.truetype('arial.ttf', size=font_size)
             draw_obj = ImageDraw.Draw(txt_img)
-            draw_obj.text((edits[index][1][0], edits[index][1][1]), edits[index][0], fill=text_colour, font=font_obj)
+            draw_obj.text((edits[index][1][0], edits[index][1][1]),
+                          edits[index][0], fill=text_colour, font=font_obj)
             inter_img = Image.alpha_composite(base_img, txt_img)
             if edit != edits[-1]:
                 base_img = inter_img.convert("RGBA")
@@ -168,7 +171,8 @@ def delete_chosen():
         none_radio.pack()
         none_radio.select()
         for i, edit in enumerate(edits, start=0):
-            option_radio = Radiobutton(radio_wn, variable=chosen, text=f"Change {i+1}:\n'{edit[0]}'", value=i)
+            option_radio = Radiobutton(radio_wn, variable=chosen,
+                                       text=f"Change {i+1}:\n'{edit[0]}'", value=i)
             option_radio.pack()
             option_radio.deselect()
 
@@ -222,10 +226,12 @@ def open_edit_win(worked_image):
     save_button = Button(scroll_win, text="Save", padx=20, bg="white", command=write_new_file)
     save_button.pack()
 
-    del_last_button = Button(scroll_win, text="Delete Last Change", padx=20, bg="white", command=delete_last)
+    del_last_button = Button(scroll_win, text="Delete Last Change",
+                             padx=20, bg="white", command=delete_last)
     del_last_button.pack()
 
-    del_last_button = Button(scroll_win, text="Choose a Change to Delete", padx=20, bg="white", command=delete_chosen)
+    del_last_button = Button(scroll_win, text="Choose a Change to Delete",
+                             padx=20, bg="white", command=delete_chosen)
     del_last_button.pack()
 
     img_label.bind('<Double 1>', add_text)
@@ -234,15 +240,16 @@ def open_edit_win(worked_image):
 def select_file():
     global file_path
 
-    file_path = filedialog.askopenfilename(initialdir = "/", title = "Select a file",
-                                            filetypes = (("all files", "*.*"), ("Jpg", "*.jpg*"), ("Jpeg", "*.jpeg*"), ("png", "*.png*")))
+    file_path = filedialog.askopenfilename(initialdir="/", title="Select a file",
+                                           filetypes=(("all files", "*.*"), ("Jpg", "*.jpg*"), ("Jpeg", "*.jpeg*"), ("png", "*.png*")))
 
     if file_path == "":
         pass
     elif ".jpg" not in file_path and ".jpeg" not in file_path and ".png" not in file_path:
-        messagebox.showerror("Invalid file type", "Sorry this file type is not compatible with VouchWrite.")
+        messagebox.showerror("Invalid file type",
+                             "Sorry this file type is not compatible with VouchWrite.")
     elif file_path != "":
-        start_label.configure(text = "File opened: " + file_path)
+        start_label.configure(text="File opened: " + file_path)
         open_edit_win(file_path)
 
 
