@@ -6,8 +6,3 @@ Essentially, it is an application to fill out reusable templates (or forms, etc.
 TO-DO:
 
 - Create Pdf compatibility
-
-
-# Pillow 8.1.1 Vulnerability
-
-As this project was more meant as a practice project, the Pillow 8.1.1 vulnerability will not be patched, though this vulnerability should not be present in the C# version of the application.
